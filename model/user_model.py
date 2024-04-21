@@ -18,8 +18,11 @@ class user_model():
         self.cur.execute("SELECT * FROM users")
         result = self.cur.fetchall()
         print(result)
-        if len(result)>0:
-            return make_response({"paload":result}, 200)
+        if len(result)>0: 
+            res = make_response({"paload":result}, 200)
+            res.headers['Access-Control-Allow-Origin'] == "*"
+            return res
+        
         else: 
             return make_response({"message":"NO DATA FOUND"},204) 
         
@@ -42,3 +45,23 @@ class user_model():
             return make_response({"message":"user Deleted successfully"},200)
         else:
             return make_response({"message":"nothing to delete"},204)
+        
+        
+        
+        
+    def user_patch_model(self,data,id):
+        qry = "UPDATE users SET "
+        for key in data:
+            qry = qry + f"{key} = '{data[key]}',"
+        qry = qry[:-1] + f" WHERE id = {id} "
+        
+        self.cur.execute(qry)
+        if self.cur.rowcount>0:
+            return make_response({"message":"user updated successfully"},200)
+        else:
+            return make_response({"message":"nothing to update"},202)
+        
+         
+            
+        
+        return qry
