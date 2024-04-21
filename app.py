@@ -8,3 +8,10 @@ if __name__ == "__main__":
 @app.route("/")
 def welcome():
     return 'helllo world'
+
+    
+@app.route("/home")
+def home():
+    return 'welcome to home '
+
+from controller import *
