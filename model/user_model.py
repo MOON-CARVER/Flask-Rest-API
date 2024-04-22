@@ -6,7 +6,7 @@ class user_model():
     def __init__(self):
         # Connection establishment code 
         try:
-            self.con = mysql.connector.connect(host="localhost",username = "root", password = "Tsubasa@1105",database = "flask_api")
+            self.con = mysql.connector.connect(host="localhost",username = "root", password = "",database = "flask")
             print("connection successful")
             self.con.autocommit = True
             self.cur = self.con.cursor(dictionary=True)
@@ -20,7 +20,7 @@ class user_model():
         print(result)
         if len(result)>0: 
             res = make_response({"paload":result}, 200)
-            res.headers['Access-Control-Allow-Origin'] == "*"
+            res.headers['Access-Control-Allow-Origin'] = "*"
             return res
         
         else: 
@@ -59,9 +59,35 @@ class user_model():
         if self.cur.rowcount>0:
             return make_response({"message":"user updated successfully"},200)
         else:
-            return make_response({"message":"nothing to update"},202)
-        
-         
-            
-        
+            return make_response({"message":"nothing to update"},202)        
         return qry
+    
+    
+    def user_pagination_model(self,limit,page):
+        limit = int(limit)
+        page = int(page)
+        start = (page*limit) - limit 
+        qry = f"SELECT * FROM users LIMIT {start} , {limit}"
+        
+         #query execution code 
+        self.cur.execute(qry)
+        result = self.cur.fetchall()
+        print(result)
+        if len(result)>0: 
+            res = make_response({"payload":result}, 200)
+          
+            return res
+        
+        else: 
+            return make_response({"message":"NO DATA FOUND"},204) 
+         
+    
+    
+    def user_upload_avatar_model(self,uid,filepath):
+        self.cur.execute(f"UPDATE users SET avatar = '{filepath}' WHERE id = '{uid}' ")
+        if self.cur.rowcount>0:
+            return make_response({"message":"avatar uploaded successfully "},200)
+        else:
+            return make_response({"message":"nothing to update"},202) 
+    
+        
