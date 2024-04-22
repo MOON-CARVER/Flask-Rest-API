@@ -2,6 +2,8 @@
 import json
 import mysql.connector
 from flask import make_response
+from datetime import datetime, timedelta 
+import jwt 
 class user_model():
     def __init__(self):
         # Connection establishment code 
@@ -17,7 +19,7 @@ class user_model():
         #query execution code 
         self.cur.execute("SELECT * FROM users")
         result = self.cur.fetchall()
-        print(result)
+       
         if len(result)>0: 
             res = make_response({"paload":result}, 200)
             res.headers['Access-Control-Allow-Origin'] = "*"
@@ -89,5 +91,22 @@ class user_model():
             return make_response({"message":"avatar uploaded successfully "},200)
         else:
             return make_response({"message":"nothing to update"},202) 
+        
+    
+    
+    def user_login_model(self,data):
+        self.cur.execute(f"SELECT id, name , email, avatar , role_id FROM users WHERE email = '{data['email']}' and password = '{data['password']}' ")
+        result = self.cur.fetchall()
+        userdata = str(result[0])
+        exp_time = datetime.now() + timedelta(minutes= 15)
+        exp_epoch_time = int(exp_time.timestamp())
+        payload = {
+            "payload" : userdata ,
+            "exp" : exp_epoch_time 
+            
+        }
+        jwtoken = jwt.encode(payload, "chander" , algorithm = "HS256") 
+        
+        return  make_response({"token":jwtoken},200)
     
         
