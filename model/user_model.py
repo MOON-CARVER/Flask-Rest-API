@@ -30,12 +30,12 @@ class user_model():
             return make_response({"message":"NO DATA FOUND"},204) 
         
     def user_addone_model(self,data):
-        self.cur.execute(f"INSERT INTO users(name,email,phone,role,password) VALUES('{data['name']}' , '{data['email']}' , '{data['phone']}' , '{data['role']}' , '{data['password']}' )")
+        self.cur.execute(f"INSERT INTO users(name,email,phone,role_id,password) VALUES('{data['name']}' , '{data['email']}' , '{data['phone']}' , '{data['role_id']}' , '{data['password']}' )")
         return make_response({"message":"user created successfully"},201)
     
     
     def user_update_model(self, data):
-        self.cur.execute(f"UPDATE users SET name = '{data['name']}' , email = '{data['email']}' , phone = '{data['phone']}' , role = '{data['role']}' , password = '{data['password']} ' WHERE id = '{data['id']}' ")
+        self.cur.execute(f"UPDATE users SET name = '{data['name']}' , email = '{data['email']}' , phone = '{data['phone']}' , role_id = '{data['role_id']}' , password = '{data['password']} ' WHERE id = '{data['id']}' ")
         if self.cur.rowcount>0:
             return make_response({"message":"user updated successfully"},200)
         else:
